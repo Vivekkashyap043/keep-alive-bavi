@@ -1,19 +1,26 @@
-const axios = require('axios');
+const fetch = require('node-fetch');
 
 module.exports = async function (req, res) {
+    const serverUrl = "https://tic-toc-toe-sj1n.onrender.com/keep-alive";
+
     try {
-        // Your Render app URL (change this if your URL changes)
-        const url = 'https://tic-toc-toe-sj1n.onrender.com/keep-alive';
+        const response = await fetch(serverUrl);
+        const data = await response.json();
 
-        // Make a GET request to the keep-alive endpoint
-        const response = await axios.get(url);
+        console.log('Ping successful:', data);
 
-        // Log the server's response (optional for debugging)
-        console.log('Ping Response:', response.data);
-
-        res.send({ status: 'ok', message: 'Ping sent to keep server alive' });
+        res.json({
+            status: 'success',
+            message: 'Server pinged successfully',
+            data,
+        });
     } catch (error) {
-        console.error('Error pinging server:', error);
-        res.send({ status: 'error', message: 'Failed to ping server' });
+        console.error('Ping failed:', error);
+
+        res.json({
+            status: 'error',
+            message: 'Failed to ping the server',
+            error: error.message,
+        });
     }
 };
